@@ -2,51 +2,91 @@
 
 // PASSWORD GENERATOR
 $(document).ready(function () {
-  $(".title").text("Hello! Password Generator"); // Generate password when generate button is clicked
+  $(".title").text("Hello! jQuery Password Generator"); // Generate password when generate button is clicked
 
   $("#generateBtn").click(function (e) {
-    e.preventDefault(); // Global Declarations
-
-    var randomPassword = "";
-    var passwordLength = $("#passwordLength").val(); // get password length
-
-    var i; // Generate random characters
-
-    for (i = 0; i < passwordLength; i++) {
-      randomPassword += Math.floor(Math.random() * 9 + 1);
-    }
-
-    $("#passwordDisplay").val(randomPassword);
+    e.preventDefault();
+    generatePassword(); // Enable copy button
 
     if ($("#passwordDisplay").val() != "") {
       $('#copyPassword').removeAttr('disabled');
     }
-  });
-  $("#passwordLength").keyup(function (e) {
-    e.preventDefault(); // let passwordLength = $("#passwordLength").val();
+  }); // Enable generate button when a valid password length is set
 
-    if ($(this).val() != '') {
+  $("#passwordLength").keyup(function (e) {
+    e.preventDefault();
+    var passwordLength = $(this).val();
+
+    if (passwordLength != '') {
+      var parseL = parseInt(passwordLength);
+      $(this).val(parseL);
       $('#generateBtn').removeAttr('disabled');
     }
   });
+  $("#passwordLength").click(function (e) {
+    e.preventDefault();
+    $(this).trigger("keyup");
+  }); // Copy password to clipboard
+
   $("#copyPassword").click(function (e) {
     e.preventDefault();
     var passwordValue = $("#passwordDisplay").val(); // copyPassword()
 
     alert("Hi copy " + passwordValue);
     $(this).text("Copied!");
-  }); // let copyPassword = function () {
-  // }
-  // function copyToClipboard(text) {
-  //     var sampleTextarea = document.createElement("textarea");
-  //     document.body.appendChild(sampleTextarea);
-  //     sampleTextarea.value = text; //save main text in it
-  //     sampleTextarea.select(); //select textarea contenrs
-  //     document.execCommand("copy");
-  //     document.body.removeChild(sampleTextarea);
-  // }
-  // function myFunction() {
-  //     var copyText = document.getElementById("myInput");
-  //     copyToClipboard(copyText.value);
-  // }
+  }); // FUNCTONS
+  // generate password function
+
+  var generatePassword = function generatePassword() {
+    //Declarations
+    var randomPassword = "";
+    var passwordLength = $("#passwordLength").val(); // get password length
+
+    var i, characterSet;
+    var characters = "";
+    var characterSetArray = []; // Check for possible password character
+    // lowercase
+
+    if ($("#lowercase").is(":checked")) {
+      characters += "abcdefghijklmnopqrstuvwxyz";
+      characterSet = "a-z";
+      characterSetArray.push(characterSet);
+    } // uppercase
+
+
+    if ($("#uppercase").is(":checked")) {
+      characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      characterSet = "A-Z";
+      characterSetArray.push(characterSet);
+    } // lower case
+
+
+    if ($("#digits").is(":checked")) {
+      characters += "0123456789";
+      characterSet = "0-9";
+      characterSetArray.push(characterSet);
+    } // lower case
+
+
+    if ($("#special").is(":checked")) {
+      characters += "![]{}()%&*$#^<>~@|";
+      characterSet = "#";
+      characterSetArray.push(characterSet);
+    } // Check if any character set has been checked
+
+
+    if (characters == "") {
+      alert("You have not checked any character sets.");
+    } else {
+      // Generate random characters
+      for (i = 0; i < passwordLength; i++) {
+        // Character set
+        $("#passwordDisplay").attr("data-character-set", characterSetArray); // Generate password
+
+        randomPassword += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+    }
+
+    $("#passwordDisplay").val(randomPassword); //display generated password on input field
+  };
 });
