@@ -6,7 +6,8 @@ $(document).ready(function () {
 
   $("#generateBtn").click(function (e) {
     e.preventDefault();
-    generatePassword(); // Enable copy button
+    generatePassword();
+    $('#copyPassword').text("Copy"); // Enable copy button
 
     if ($("#passwordDisplay").val() != "") {
       $('#copyPassword').removeAttr('disabled');
@@ -30,10 +31,14 @@ $(document).ready(function () {
 
   $("#copyPassword").click(function (e) {
     e.preventDefault();
-    var passwordValue = $("#passwordDisplay").val(); // copyPassword()
+    var passwordValue = $("#passwordDisplay").val();
 
-    alert("Hi copy " + passwordValue);
-    $(this).text("Copied!");
+    if (passwordValue != '') {
+      copyPassword();
+      $(this).text("Copied!");
+    } else {
+      alert("You have not generated any passwords.");
+    }
   }); // FUNCTONS
   // generate password function
 
@@ -88,5 +93,19 @@ $(document).ready(function () {
     }
 
     $("#passwordDisplay").val(randomPassword); //display generated password on input field
+  };
+
+  var copyPassword = function copyPassword() {
+    /* Get the password display field field */
+    var passwordField = $("#passwordDisplay");
+    /* Select the password */
+
+    passwordField.select();
+    /* Copy the password inside the password display field */
+
+    navigator.clipboard.writeText(passwordField.val());
+    /* Alert the copied text */
+
+    alert("Copied password: " + passwordField.val());
   };
 });
